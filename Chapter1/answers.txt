@@ -1,0 +1,50 @@
+Exercise 1.2.
+
+1. Safety. Out of order serving
+2. Liveness. Eventually it will go wrong.
+3. Safety.
+4. Liveness. Unavoidable.
+5. Safety. 
+6. Safety.
+7. Liveness.
+8. Safety.
+9. 
+10. Liveness
+
+Exercise 1.3
+Alice gives Bob a can on a string. She pulls it when pets are done.
+
+Bob:
+If Alice's can is down he brings out food, puts Alice's can up and pulls his can.
+
+Alice:
+If Bob's can is down she lets pets eat, when she is done she puts Bob's can up and pulls her can.
+
+Exercise 1.4
+One prisoner counts, while the others turn the light on.
+The first time each of the prisoners enters the room with the light off he turns it on. 
+Prisoner that counts does nothing if the light is off, if it is on he turns it off and adds 1.
+When he counts P-1 everyone has for sure been in the room.
+
+For the second part, the problem arises because we dont know if the counting prisoner is the first one to enter.
+
+Exercies 1.6
+Minimise
+
+0.8 * (0.15 + 0.85/N) + 0.2 * [ (N/(N+10)) *  (0.15*14 + 0.85*N) + 10/(N+10) ]
+
+Exercise 1.7
+
+1 / [ 0.3 + 0.7/n ]
+
+k = (6n+4)/(3n-3) ?????????????????
+
+Exercise 1.8
+
+Exercise 1.9
+
+Speedup factor of at least 5 required
+
+1 / (1 - p + p/10) > 5
+
+p > 8/9
