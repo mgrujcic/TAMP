@@ -13,4 +13,7 @@ public class TTASLock implements Lock {
     public void unlock(){
         state.set(false);
     }
+    public boolean isLocked(){
+        return state.get();
+    }
 }

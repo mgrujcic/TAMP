@@ -36,4 +36,7 @@ public class MCS implements Lock{
         node.next.locked = false;
         node.next = null;
     }
+    public boolean isLocked(){
+        return tail.get().locked;
+    }
 }

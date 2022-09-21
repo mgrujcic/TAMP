@@ -34,5 +34,8 @@ public class CLH implements Lock{
         qnode.locked = false;
         myNode.set(myPred.get());//awesome
     }
-    
+    //maybe its not locked but there is someone waiting? not sure if this was the intended solution
+    public boolean isLocked(){
+        return tail.get().locked;
+    }
 }
