@@ -1,7 +1,5 @@
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.swing.border.EmptyBorder;
-
 public class LockFreeQueue<T> {
     AtomicReference<Node> head,tail;
     public LockFreeQueue(){
