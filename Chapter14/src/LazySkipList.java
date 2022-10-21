@@ -1,3 +1,4 @@
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,11 +32,60 @@ public class LazySkipList<T>{
             succs[levelFound] = curr;
 
         }
-
-
-
-
         return levelFound;
+    }
+
+    boolean add(T x){
+        int toplevel = randomLevel();
+        Node<T>[] preds = (Node<t>[]) new Node[MAX_LEVEL + 1];
+        Node<T>[] succs = (Node<T>[]) new Node[MAX_LEVEL + 1];
+        while (true){
+            int lFound = find(x, preds, succs);
+            if(lFound != -1){ //if x exists in the skiplist
+                if(lFound != -1){
+                    Node<T> nodeFound = succs[lFound];
+                    if(!nodeFound.marked){//it wasn't removed
+                        while(!nodeFound.fullyLinked);//the value is already being added. 
+                        //Have to wait for it so it cannot happen that there isn't a fully
+                        //linked node without a remove call in the meantime
+                        return false;
+                    }
+                    continue;
+                }
+                int highestLocked = -1;
+                try{
+                    Node<T> pred, succ;
+                    boolean valid = true;
+                    for(int level = 0; valid && (level <= toplevel); level++){
+                        pred = preds[level];
+                        succ = succs[level];
+                        pred.lock();
+                        highestLocked = level;
+                        //succ isn't locked!
+                        valid = !pred.marked && !succ.marked && pred.next[level] == succ;
+                    }
+                    if(!valid)continue;
+                    Node<T> newNode = new Node(x, toplevel);
+                    for(int level = 0; level <= toplevel; level++)
+                        newNode.next[level] = succs[level];
+                    for(int level = 0; level <= toplevel; level++)
+                        preds[level].next[level] = newNode;
+                    newNode.fullyLinked = true;
+                    return true;
+                }finally{
+                    for(int level = 0; level <= highestLocked; level++)
+                        preds[level].unlock();
+                }
+
+            }
+        }
+    }
+
+    int randomLevel(){
+        int rand = ThreadLocalRandom.current().nextInt(1, 1<<MAX_LEVEL);
+        int i;
+        for(i = 1<<(MAX_LEVEL-1); (i&rand) == 0; i>>=2);
+        return i+1; 
     }
 
     private static final class Node<T>{
