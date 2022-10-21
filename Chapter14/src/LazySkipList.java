@@ -37,7 +37,7 @@ public class LazySkipList<T>{
 
     boolean add(T x){
         int toplevel = randomLevel();
-        Node<T>[] preds = (Node<t>[]) new Node[MAX_LEVEL + 1];
+        Node<T>[] preds = (Node<T>[]) new Node[MAX_LEVEL + 1];
         Node<T>[] succs = (Node<T>[]) new Node[MAX_LEVEL + 1];
         while (true){
             int lFound = find(x, preds, succs);
@@ -79,6 +79,67 @@ public class LazySkipList<T>{
 
             }
         }
+    }
+
+    boolean remove(T x){
+        Node<T> victim = null;
+        boolean isMarked = false;
+        int topLevel = -1;
+        Node<T>[] preds = (Node<T>[]) new Node[MAX_LEVEL + 1];
+        Node<T>[] succs = (Node<T>[]) new Node[MAX_LEVEL + 1];
+        while(true){
+            int lFound = find(x, preds, succs);
+            if(lFound != -1) victim = succs[lFound];
+            if(isMarked ||
+                (lFound != -1 && 
+                 victim.fullyLinked &&
+                 victim.topLevel == lFound && //How can it even happen that it is fully linked, unmarked, and yet has missing levels??
+                 !victim.marked)){
+                
+                if(!isMarked){
+                    topLevel = victim.topLevel;
+                    victim.lock();
+                    if(victim.marked){//check if someone marked it between checking if it is marekd and locking it
+                        victim.unlock();
+                        return false;
+                    }
+                    victim.marked = true;
+                    isMarked = true;
+                }
+                int highestLocked = -1;
+                try{
+                    Node<T> pred, succ;
+                    boolean valid = true;
+                    for(int level = 0; valid && (level <= topLevel); level++){
+                        pred = preds[level];
+                        pred.lock();
+                        highestLocked = level;
+                        valid = !pred.marked && pred.next[level] == victim;
+                    }
+                    if(!valid)
+                        continue;
+                    for(int level = topLevel; level >= 0; level--)
+                        preds[level].next[level] = victim.next[level];
+                    victim.unlock();
+                    return true;
+                }finally{
+                    for(int i = 0; i <= highestLocked; i++){
+                        preds[i].unlock();
+                    }
+                }
+            }else{
+                return false;
+            }
+        }
+    }
+
+    boolean contains(T x){
+        Node<T>[] preds = (Node<T>[]) new Node[MAX_LEVEL + 1];
+        Node<T>[] succs = (Node<T>[]) new Node[MAX_LEVEL + 1];
+        int lFound = find(x, preds, succs);
+        return lFound != -1 
+            && succs[lFound].fullyLinked
+            && !succs[lFound].marked;
     }
 
     int randomLevel(){
