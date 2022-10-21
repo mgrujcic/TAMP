@@ -43,4 +43,22 @@ public class Matrix { // 2^n x 2^n only
             }
         }
     }
+    void multiply(Matrix lhs, Matrix rhs, Matrix product){
+        if( lhs.dim != rhs.dim 
+         || lhs.rowDisplace != rhs.rowDisplace
+         || lhs.colDisplace != rhs.colDisplace){
+
+            System.exit(-1); //cba
+        }
+        for(int i = lhs.rowDisplace; i < lhs.rowDisplace+lhs.dim; i++){
+            for(int j = rhs.colDisplace; i < rhs.colDisplace+rhs.dim; j++){
+                double res = 0;
+                for(int k = 0; k < lhs.dim; k++){
+                    res += lhs.get(i, lhs.colDisplace+k) * rhs.get(rhs.rowDisplace+k, j);
+                }
+                product.set(i, j, res);
+            }
+        }
+        
+    }
 }
