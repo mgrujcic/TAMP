@@ -1,0 +1,58 @@
+9.1 
+always check every object with the given key
+when performing any of the operations
+the order of the items with the same key doesn't matter
+in Window::find line 22 check if the key is equal 
+and object is equal, or key is greater
+
+9.2 If the method calls are linearized at the instant the lock
+is acquired then the item is concidered in the set
+before it is reachable from the head for add method
+similar holds for the remove method
+
+item is in the set if it is reachable from the head
+or the thread adding it holds the lock
+or there is no thread currently removing it while holding the lock
+
+9.3 if one thread holds i node other threads cannot
+lock i+1 node and then ask for the i nodes lock.
+also since all methods first lock the head and then the
+next node deadlock cannot happen at the start beacause
+the former applies.
+
+9.4 other threads won't be able to access the note that 
+add is modifying while the lock for that node is being held
+it can be linearized at any point between modifying it
+and the lock being released.
+
+9.5 all of the nodes acquire the locks in the same order
+i and then i+1. if a thread holds lock i
+it cannot happen that thread holding i+1 is
+trying to acquire i.
+
+9.6
+it has to repeatedly fail the validation
+it fails the validation if pred or curr was modified
+so for example every time that it finds the candidate pred and curr
+some other thread deletes one of them or adds a node in between them.
+if one of them is being repeatedly added and then removed, all in betwen
+the searching step and the validation it will fail forever.
+
+9.7 provided. it is linearized at any point in which the method call
+holds the lock of the node with the smallest key
+greater or equal to the item being searched for
+
+9.8 since the validation occurs after both of the locks are held it is correct
+but it can deadlock with a remove call that locks the same two nodes.
+
+9.9 if predA is reachable than it is in the list, so end must 
+be reachable. if predA isn't reachable, it has been removed from the list
+but when a node is being removed their next field is not changed.
+since tail was reachable before it was removed,
+it is still reachable rigth after, even if the next node was removed too, similar holds for the next node,
+we can always go down 0 or more removed nodes to get back into the active list.
+
+9.10 it does not modify the curr node, so it doesnt matter if some other thread is modifying its fields.
+and other threads for sure will not modify curr.key field.
+if some other thread is attempting to remove curr it has to hold the lock of pred, so problem can arise there.
+
