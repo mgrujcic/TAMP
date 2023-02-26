@@ -21,6 +21,12 @@ public class WordCount {
         mapReduce.setReducerSupplpier(WordCount.WCReducer::new);
         mapReduce.setInput(inputs);
         Map<String, Long> map = mapReduce.call();
+        /*
+        RecursiveWordCountTask wCountTask = new RecursiveWordCountTask(
+            text.spliterator()
+        );
+        Map<String, Long> map = wCountTask.compute();
+        */
         displayOutout(map);
     }
 
