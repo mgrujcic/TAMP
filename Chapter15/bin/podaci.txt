@@ -1,0 +1,2 @@
+h i s t ( t i t a n i c $ A g e , prob=TRUE, b r e a k s=g r a n i c e , main =”” , c o l =’ red ’ )
+l i n e s ( d e n s i t y ( t i t a n i c $ A g e ) , main = ’ ’ , lwd =2)
